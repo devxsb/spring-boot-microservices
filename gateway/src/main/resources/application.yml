@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/v1/user/**
+        - id: job-service
+          uri: lb://job-service
+          predicates:
+            - Path=/v1/job/**
+      discovery:
+        locator:
+          enabled: true
+  zipkin:
+    base-url: http://localhost:9411
+server:
+  port: 8889
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
