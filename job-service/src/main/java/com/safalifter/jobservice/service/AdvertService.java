@@ -29,6 +29,7 @@ public class AdvertService {
         Advert toSave = Advert.builder()
                 .userId(userId)
                 .job(job)
+                .name(request.getName())
                 .advertiser(request.getAdvertiser())
                 .deliveryTime(request.getDeliveryTime())
                 .description(request.getDescription())
@@ -52,6 +53,7 @@ public class AdvertService {
 
     public Advert updateAdvertById(AdvertUpdateRequest request) {
         Advert toUpdate = findAdvertById(request.getId());
+        toUpdate.setName(Optional.ofNullable(request.getName()).orElse(toUpdate.getName()));
         toUpdate.setDeliveryTime(Optional.of(request.getDeliveryTime()).orElse(toUpdate.getDeliveryTime()));
         toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(toUpdate.getDescription()));
         toUpdate.setPrice(Optional.of(request.getPrice()).orElse(toUpdate.getPrice()));

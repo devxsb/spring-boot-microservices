@@ -25,6 +25,12 @@ public class JobController {
                 .body(modelMapper.map(jobService.createJob(request), JobDto.class));
     }
 
+    @PostMapping("/getJobsThatFitYourNeeds")
+    ResponseEntity<List<JobDto>> getJobsThatFitYourNeeds(@RequestBody String needs) {
+        return ResponseEntity.ok(jobService.getJobsThatFitYourNeeds(needs).stream()
+                .map(job -> modelMapper.map(job, JobDto.class)).toList());
+    }
+
     @GetMapping("/getAll")
     ResponseEntity<List<JobDto>> getAll() {
         return ResponseEntity.ok(jobService.getAll().stream()
@@ -36,6 +42,12 @@ public class JobController {
         return ResponseEntity.ok(modelMapper.map(jobService.getJobById(id), JobDto.class));
     }
 
+    @GetMapping("/getJobsByCategoryId/{id}")
+    ResponseEntity<List<JobDto>> getJobsByCategoryId(@PathVariable String id) {
+        return ResponseEntity.ok(jobService.getJobsByCategoryId(id).stream()
+                .map(job -> modelMapper.map(job, JobDto.class)).toList());
+    }
+
     @PutMapping("/update")
     ResponseEntity<JobDto> updateJob(@RequestBody JobUpdateRequest request) {
         return ResponseEntity.ok(modelMapper.map(jobService.updateJob(request), JobDto.class));
@@ -45,11 +57,5 @@ public class JobController {
     ResponseEntity<Void> deleteJobById(@PathVariable String id) {
         jobService.deleteJobById(id);
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/getJobsThatFitYourNeeds")
-    ResponseEntity<List<JobDto>> getJobsThatFitYourNeeds(@RequestBody String needs) {
-        return ResponseEntity.ok(jobService.getJobsThatFitYourNeeds(needs).stream()
-                .map(job -> modelMapper.map(job, JobDto.class)).toList());
     }
 }

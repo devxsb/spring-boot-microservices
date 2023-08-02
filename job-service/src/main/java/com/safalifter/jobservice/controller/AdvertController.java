@@ -1,12 +1,10 @@
 package com.safalifter.jobservice.controller;
 
 import com.safalifter.jobservice.dto.AdvertDto;
-import com.safalifter.jobservice.dto.OfferDto;
 import com.safalifter.jobservice.enums.Advertiser;
 import com.safalifter.jobservice.request.advert.AdvertCreateRequest;
 import com.safalifter.jobservice.request.advert.AdvertUpdateRequest;
 import com.safalifter.jobservice.service.AdvertService;
-import com.safalifter.jobservice.service.OfferService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,7 +19,6 @@ import java.util.List;
 public class AdvertController {
     private final AdvertService advertService;
     private final ModelMapper modelMapper;
-    private final OfferService offerService;
 
     @PostMapping("/create")
     public ResponseEntity<AdvertDto> createAdvert(@RequestBody AdvertCreateRequest request) {
@@ -38,12 +35,6 @@ public class AdvertController {
     @GetMapping("/getAdvertById/{id}")
     public ResponseEntity<AdvertDto> getAdvertById(@PathVariable String id) {
         return ResponseEntity.ok(modelMapper.map(advertService.getAdvertById(id), AdvertDto.class));
-    }
-
-    @GetMapping("/{id}/offers")
-    public ResponseEntity<List<OfferDto>> getOffersByAdvertId(@PathVariable String id) {
-        return ResponseEntity.ok(offerService.getOffersByAdvertId(id).stream()
-                .map(offer -> modelMapper.map(offer, OfferDto.class)).toList());
     }
 
     @GetMapping("/getAdvertsByUserId/{id}")

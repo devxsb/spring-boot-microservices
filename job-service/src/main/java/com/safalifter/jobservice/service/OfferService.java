@@ -1,11 +1,13 @@
 package com.safalifter.jobservice.service;
 
+import com.safalifter.jobservice.client.NotificationServiceClient;
 import com.safalifter.jobservice.client.UserServiceClient;
 import com.safalifter.jobservice.enums.OfferStatus;
 import com.safalifter.jobservice.exc.NotFoundException;
 import com.safalifter.jobservice.model.Advert;
 import com.safalifter.jobservice.model.Offer;
 import com.safalifter.jobservice.repository.OfferRepository;
+import com.safalifter.jobservice.request.notification.SendNotificationRequest;
 import com.safalifter.jobservice.request.offer.MakeAnOfferRequest;
 import com.safalifter.jobservice.request.offer.OfferUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final AdvertService advertService;
     private final UserServiceClient userServiceclient;
+    private final NotificationServiceClient notificationServiceClient;
 
     public Offer makeAnOffer(MakeAnOfferRequest request) {
         String userId = isTheUserRegistered(request.getUserId());
@@ -30,7 +33,12 @@ public class OfferService {
                 .advert(advert)
                 .offeredPrice(request.getOfferedPrice())
                 .status(OfferStatus.OPEN).build();
-        return offerRepository.save(toSave);
+        offerRepository.save(toSave);
+        notificationServiceClient.sendNotification(SendNotificationRequest.builder()
+                .message("You have received an offer for your advertising.")
+                .userId(advert.getUserId())
+                .offerId(toSave.getId()).build());
+        return toSave;
     }
 
     public Offer getOfferById(String id) {
@@ -39,12 +47,12 @@ public class OfferService {
 
     public List<Offer> getOffersByAdvertId(String id) {
         Advert advert = advertService.getAdvertById(id);
-        return offerRepository.getOffersByAdvert_Id(advert.getId());
+        return offerRepository.getOffersByAdvertId(advert.getId());
     }
 
     public List<Offer> getOffersByUserId(String id) {
         String userId = isTheUserRegistered(id);
-        return offerRepository.getOffersByUser_Id(userId);
+        return offerRepository.getOffersByUserId(userId);
     }
 
     public Offer updateOfferById(OfferUpdateRequest request) {

@@ -5,7 +5,6 @@ import com.safalifter.jobservice.dto.JobDto;
 import com.safalifter.jobservice.request.category.CategoryCreateRequest;
 import com.safalifter.jobservice.request.category.CategoryUpdateRequest;
 import com.safalifter.jobservice.service.CategoryService;
-import com.safalifter.jobservice.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
-    private final JobService jobService;
 
     @PostMapping("/create")
     ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryCreateRequest request) {
@@ -37,12 +35,6 @@ public class CategoryController {
     @GetMapping("/getCategoryById/{id}")
     ResponseEntity<CategoryDto> getCategoryById(@PathVariable String id) {
         return ResponseEntity.ok(modelMapper.map(categoryService.getCategoryById(id), CategoryDto.class));
-    }
-
-    @GetMapping("/{id}/jobs")
-    ResponseEntity<List<JobDto>> getJobsByCategoryId(@PathVariable String id) {
-        return ResponseEntity.ok(jobService.getJobsByCategoryId(id).stream()
-                .map(job -> modelMapper.map(job, JobDto.class)).toList());
     }
 
     @PutMapping("/update")

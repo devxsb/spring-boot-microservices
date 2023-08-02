@@ -9,6 +9,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvertDto {
     private String id;
+    private String name;
     private String description;
     private int deliveryTime;
     private int price;

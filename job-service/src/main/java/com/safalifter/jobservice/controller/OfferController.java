@@ -36,6 +36,12 @@ public class OfferController {
                 .map(offer -> modelMapper.map(offer, OfferDto.class)).toList());
     }
 
+    @GetMapping("/getOffersByAdvertId/{id}")
+    public ResponseEntity<List<OfferDto>> getOffersByAdvertId(@PathVariable String id) {
+        return ResponseEntity.ok(offerService.getOffersByAdvertId(id).stream()
+                .map(offer -> modelMapper.map(offer, OfferDto.class)).toList());
+    }
+
     @PutMapping("/update")
     public ResponseEntity<OfferDto> updateOfferById(@RequestBody OfferUpdateRequest request) {
         return ResponseEntity.ok(modelMapper.map(offerService.updateOfferById(request), OfferDto.class));

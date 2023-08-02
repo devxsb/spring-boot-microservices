@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 public class Advert extends BaseEntity {
     private String userId;
+    private String name;
     private String description;
     private int deliveryTime;
     private int price;

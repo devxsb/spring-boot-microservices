@@ -50,7 +50,7 @@ public class JobService {
     }
 
     public List<Job> getJobsByCategoryId(String id) {
-        return jobRepository.getJobsByCategory_Id(id);
+        return jobRepository.getJobsByCategoryId(id);
     }
 
     public List<Job> getJobsThatFitYourNeeds(String needs) {
