@@ -12,6 +12,14 @@ spring:
           uri: lb://job-service
           predicates:
             - Path=/v1/job/**
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/v1/auth/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/v1/notification/**
       discovery:
         locator:
           enabled: true
