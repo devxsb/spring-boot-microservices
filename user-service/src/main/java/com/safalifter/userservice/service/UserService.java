@@ -3,6 +3,7 @@ package com.safalifter.userservice.service;
 import com.safalifter.userservice.enums.Active;
 import com.safalifter.userservice.enums.Role;
 import com.safalifter.userservice.exc.NotFoundException;
+import com.safalifter.userservice.exc.UnauthorizedException;
 import com.safalifter.userservice.model.User;
 import com.safalifter.userservice.model.UserDetails;
 import com.safalifter.userservice.repository.UserRepository;
@@ -43,16 +44,24 @@ public class UserService {
         return findUserByEmail(email);
     }
 
-    public User updateUserById(UserUpdateRequest request) {
+    public User getUserByUsername(String username) {
+        return findUserByUsername(username);
+    }
+
+    public User updateUserById(UserUpdateRequest request, String username) {
         User toUpdate = findUserById(request.getId());
+        if (!toUpdate.getUsername().equals(username))
+            throw new UnauthorizedException("You are not authorized to update this user");
         toUpdate.setUsername(Optional.ofNullable(request.getUsername()).orElse(toUpdate.getUsername()));
         toUpdate.setPassword(Optional.ofNullable(request.getPassword()).orElse(toUpdate.getPassword()));
         toUpdate.setUserDetails(updateUserDetails(toUpdate.getUserDetails(), request.getUserDetails()));
         return userRepository.save(toUpdate);
     }
 
-    public void deleteUserById(String id) {
+    public void deleteUserById(String id, String username) {
         User toDelete = findUserById(id);
+        if (!toDelete.getUsername().equals(username))
+            throw new UnauthorizedException("You are not authorized to delete this user");
         toDelete.setActive(Active.INACTIVE);
         userRepository.save(toDelete);
     }
@@ -73,6 +82,7 @@ public class UserService {
     }
 
     private UserDetails updateUserDetails(UserDetails toUpdate, UserDetails request) {
+        if (request == null) return toUpdate;
         toUpdate = toUpdate == null ? new UserDetails() : toUpdate;
         toUpdate.setFirstName(Optional.ofNullable(request.getFirstName()).orElse(toUpdate.getFirstName()));
         toUpdate.setLastName(Optional.ofNullable(request.getLastName()).orElse(toUpdate.getLastName()));
