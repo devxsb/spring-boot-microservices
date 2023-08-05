@@ -1,37 +1,11 @@
+server:
+  port: 8080
+
 spring:
   application:
-    name: gateway-service
+    name: api-gateway
   cloud:
     gateway:
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/v1/user/**
-        - id: job-service
-          uri: lb://job-service
-          predicates:
-            - Path=/v1/job/**
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/v1/auth/**
-        - id: notification-service
-          uri: lb://notification-service
-          predicates:
-            - Path=/v1/notification/**
       discovery:
         locator:
           enabled: true
-  zipkin:
-    base-url: http://localhost:9411
-server:
-  port: 8889
-
-eureka:
-  client:
-    register-with-eureka: true
-    service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    prefer-ip-address: true
