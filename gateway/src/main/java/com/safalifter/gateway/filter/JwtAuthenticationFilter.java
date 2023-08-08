@@ -1,6 +1,7 @@
 package com.safalifter.gateway.filter;
 
 import com.safalifter.gateway.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import java.util.function.Predicate;
 
 @Component
 public class JwtAuthenticationFilter implements GatewayFilter {
-
     private final JwtUtil jwtUtil;
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
@@ -40,9 +40,12 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
             try {
                 jwtUtil.validateToken(token);
+
+                Claims claims = jwtUtil.getClaims(token);
+
                 exchange.getRequest()
                         .mutate()
-                        .header("loggedInUser", jwtUtil.getUsername(token))
+                        .header("loggedInUser", claims.getSubject())
                         .build();
             } catch (Exception e) {
                 return onError(exchange);
