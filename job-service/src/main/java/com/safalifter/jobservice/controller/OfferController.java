@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/offer")
+@RequestMapping("/v1/job-service/offer")
 @RequiredArgsConstructor
 public class OfferController {
     private final OfferService offerService;

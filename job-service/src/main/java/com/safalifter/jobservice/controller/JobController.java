@@ -8,18 +8,20 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/job")
+@RequestMapping("/v1/job-service/job")
 @RequiredArgsConstructor
 public class JobController {
     private final JobService jobService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<JobDto> createJob(@RequestBody JobCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(jobService.createJob(request), JobDto.class));
@@ -49,11 +51,13 @@ public class JobController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<JobDto> updateJob(@RequestBody JobUpdateRequest request) {
         return ResponseEntity.ok(modelMapper.map(jobService.updateJob(request), JobDto.class));
     }
 
     @DeleteMapping("/deleteJobById/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<Void> deleteJobById(@PathVariable String id) {
         jobService.deleteJobById(id);
         return ResponseEntity.ok().build();

@@ -9,18 +9,20 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/category")
+@RequestMapping("/v1/job-service/category")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(categoryService.createCategory(request), CategoryDto.class));
@@ -38,11 +40,13 @@ public class CategoryController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<JobDto> updateCategoryById(@RequestBody CategoryUpdateRequest request) {
         return ResponseEntity.ok(modelMapper.map(categoryService.updateCategoryById(request), JobDto.class));
     }
 
     @DeleteMapping("/deleteCategoryById/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<Void> deleteCategoryById(@PathVariable String id) {
         categoryService.deleteCategoryById(id);
         return ResponseEntity.ok().build();
