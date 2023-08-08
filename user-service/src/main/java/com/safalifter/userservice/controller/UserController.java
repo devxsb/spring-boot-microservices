@@ -1,7 +1,7 @@
 package com.safalifter.userservice.controller;
 
+import com.safalifter.userservice.dto.AuthUserDto;
 import com.safalifter.userservice.dto.UserDto;
-import com.safalifter.userservice.model.User;
 import com.safalifter.userservice.request.RegisterRequest;
 import com.safalifter.userservice.request.UserUpdateRequest;
 import com.safalifter.userservice.service.UserService;
@@ -41,8 +41,8 @@ public class UserController {
     }
 
     @GetMapping("/getUserByUsername/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserByUsername(username));
+    public ResponseEntity<AuthUserDto> getUserByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(modelMapper.map(userService.getUserByUsername(username), AuthUserDto.class));
     }
 
     @PutMapping("/update")

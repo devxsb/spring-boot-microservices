@@ -1,8 +1,8 @@
 package com.safalifter.userservice;
 
+import com.safalifter.userservice.enums.Role;
 import com.safalifter.userservice.model.User;
 import com.safalifter.userservice.repository.UserRepository;
-import com.safalifter.userservice.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,11 +22,13 @@ public class UserServiceApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+        final String pass = "$2a$10$2529eBq3R6Y41t03Mku2I.2Nh3W0p25lt.s.85mG0kiAvxI4bsAHa";
         var admin = User.builder()
                 .username("admin")
                 .email("admin@gmail.com")
-                .password("admin123").build();
+                .password(pass)
+                .role(Role.ADMIN).build();
         if (userRepository.findByUsername("admin").isEmpty()) userRepository.save(admin);
     }
 }
