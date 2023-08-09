@@ -4,6 +4,7 @@ import com.safalifter.userservice.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,8 +22,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/user/getUserByUsername/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/user/save").permitAll()
+                .anyRequest().authenticated()
                 .and()
+                .formLogin().disable()
+                .httpBasic().disable()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
