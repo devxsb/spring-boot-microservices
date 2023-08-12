@@ -3,7 +3,7 @@ package com.safalifter.jobservice.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity(name = "jobs")
@@ -23,6 +23,9 @@ public class Job extends BaseEntity {
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List<Advert> adverts;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> keys = new ArrayList<>();
+    @ElementCollection
+    private List<String> keys = Collections.emptyList();
+
+    @ElementCollection
+    private List<String> imagesId = Collections.emptyList();
 }

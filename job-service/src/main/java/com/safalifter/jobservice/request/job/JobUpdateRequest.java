@@ -9,4 +9,5 @@ public class JobUpdateRequest {
     private String description;
     private String categoryId;
     private String[] keys;
+    private String[] imagesId;
 }

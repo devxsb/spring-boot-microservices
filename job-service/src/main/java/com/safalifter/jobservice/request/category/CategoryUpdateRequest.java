@@ -7,4 +7,5 @@ public class CategoryUpdateRequest {
     private String id;
     private String name;
     private String description;
+    private String[] imagesId;
 }

@@ -14,4 +14,5 @@ public class JobDto {
     private String categoryId;
     private List<AdvertDto> adverts;
     private List<String> keys;
+    private List<String> imagesId;
 }

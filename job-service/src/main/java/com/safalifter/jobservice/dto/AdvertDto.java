@@ -5,6 +5,8 @@ import com.safalifter.jobservice.enums.AdvertStatus;
 import com.safalifter.jobservice.enums.Advertiser;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvertDto {
@@ -17,4 +19,5 @@ public class AdvertDto {
     private Advertiser advertiser;
     private String userId;
     private String jobId;
+    private List<String> imagesId;
 }

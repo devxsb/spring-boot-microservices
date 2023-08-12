@@ -21,6 +21,7 @@ public class CategoryService {
                 Category.builder()
                         .name(request.getName())
                         .description(request.getDescription())
+                        .imagesId(List.of(request.getImagesId()))
                         .build());
     }
 
@@ -36,6 +37,7 @@ public class CategoryService {
         Category toUpdate = findCategoryById(request.getId());
         toUpdate.setName(Optional.ofNullable(request.getName()).orElse(request.getName()));
         toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(request.getDescription()));
+        toUpdate.setImagesId(Optional.of(List.of(request.getImagesId())).orElse(toUpdate.getImagesId()));
         return categoryRepository.save(toUpdate);
     }
 

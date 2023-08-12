@@ -12,4 +12,5 @@ public class AdvertCreateRequest {
     private Advertiser advertiser;
     private String userId;
     private String jobId;
+    private String[] imagesId;
 }

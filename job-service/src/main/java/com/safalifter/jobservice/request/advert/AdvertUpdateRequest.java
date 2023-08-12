@@ -11,4 +11,5 @@ public class AdvertUpdateRequest {
     private int deliveryTime;
     private int price;
     private AdvertStatus status;
+    private String[] imagesId;
 }

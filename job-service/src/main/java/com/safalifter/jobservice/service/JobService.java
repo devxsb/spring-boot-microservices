@@ -24,7 +24,9 @@ public class JobService {
                 .name(request.getName())
                 .description(request.getDescription())
                 .category(category)
-                .keys(Arrays.asList(request.getKeys())).build());
+                .keys(List.of(request.getKeys()))
+                .imagesId(List.of(request.getImagesId()))
+                .build());
     }
 
     public List<Job> getAll() {
@@ -41,7 +43,8 @@ public class JobService {
         toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(request.getDescription()));
         toUpdate.setCategory(Optional.of(request.getCategoryId())
                 .map(categoryService::getCategoryById).orElse(toUpdate.getCategory()));
-        toUpdate.setKeys(Optional.of(Arrays.asList(request.getKeys())).orElse(toUpdate.getKeys()));
+        toUpdate.setKeys(Optional.of(List.of(request.getKeys())).orElse(toUpdate.getKeys()));
+        toUpdate.setImagesId(Optional.of(List.of(request.getImagesId())).orElse(toUpdate.getImagesId()));
         return jobRepository.save(toUpdate);
     }
 

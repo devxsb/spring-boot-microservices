@@ -6,4 +6,5 @@ import lombok.Getter;
 public class CategoryCreateRequest {
     private String name;
     private String description;
+    private String[] imagesId;
 }

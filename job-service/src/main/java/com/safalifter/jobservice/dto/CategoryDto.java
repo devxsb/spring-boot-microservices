@@ -12,4 +12,5 @@ public class CategoryDto {
     private String name;
     private String description;
     private List<JobDto> jobs;
+    private List<String> imagesId;
 }

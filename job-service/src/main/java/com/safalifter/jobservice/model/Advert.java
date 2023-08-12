@@ -5,6 +5,7 @@ import com.safalifter.jobservice.enums.Advertiser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 @Entity(name = "adverts")
@@ -32,4 +33,7 @@ public class Advert extends BaseEntity {
 
     @OneToMany(mappedBy = "advert", cascade = CascadeType.ALL)
     private List<Offer> offers;
+
+    @ElementCollection
+    private List<String> imagesId = Collections.emptyList();
 }

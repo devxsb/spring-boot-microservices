@@ -8,4 +8,5 @@ public class JobCreateRequest {
     private String description;
     private String categoryId;
     private String[] keys;
+    private String[] imagesId;
 }

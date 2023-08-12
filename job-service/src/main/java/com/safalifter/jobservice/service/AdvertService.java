@@ -34,7 +34,9 @@ public class AdvertService {
                 .deliveryTime(request.getDeliveryTime())
                 .description(request.getDescription())
                 .price(request.getPrice())
-                .status(AdvertStatus.OPEN).build();
+                .status(AdvertStatus.OPEN)
+                .imagesId(List.of(request.getImagesId()))
+                .build();
         return advertRepository.save(toSave);
     }
 
@@ -58,6 +60,7 @@ public class AdvertService {
         toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(toUpdate.getDescription()));
         toUpdate.setPrice(Optional.of(request.getPrice()).orElse(toUpdate.getPrice()));
         toUpdate.setStatus(Optional.ofNullable(request.getStatus()).orElse(toUpdate.getStatus()));
+        toUpdate.setImagesId(Optional.of(List.of(request.getImagesId())).orElse(toUpdate.getImagesId()));
         return advertRepository.save(toUpdate);
     }
 
