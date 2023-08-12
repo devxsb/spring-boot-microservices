@@ -31,6 +31,10 @@ public class GatewayConfig {
 
                 .route("auth-service", r -> r.path("/v1/auth/**")
                         .uri("lb://auth-service"))
+
+                .route("file-storage", r -> r.path("/v1/file-storage/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("lb://file-storage"))
                 .build();
     }
 }

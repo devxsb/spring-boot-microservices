@@ -9,3 +9,6 @@ spring:
       discovery:
         locator:
           enabled: true
+      httpclient:
+        connect-timeout: 60000
+        response-timeout: 60s

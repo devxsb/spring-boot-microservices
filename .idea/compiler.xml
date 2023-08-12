@@ -11,13 +11,16 @@
         <module name="auth-service" />
         <module name="user-service" />
         <module name="eureka-server" />
+        <module name="file-service" />
         <module name="gateway" />
         <module name="notification-service" />
+        <module name="file-storage" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="chat-service" target="17" />
       <module name="contact-service" target="17" />
+      <module name="file-service" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -26,6 +29,8 @@
       <module name="chat-service" options="-parameters" />
       <module name="contact-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="file-service" options="-parameters" />
+      <module name="file-storage" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="job-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
