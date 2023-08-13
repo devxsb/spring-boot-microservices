@@ -1,10 +1,10 @@
 package com.safalifter.notificationservice.repository;
 
 import com.safalifter.notificationservice.model.Notification;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface NotificationRepository extends MongoRepository<Notification, String> {
-    List<Notification> findAllByUserIdOrderByCreatedDateDesc(String id);
+public interface NotificationRepository extends JpaRepository<Notification, String> {
+    List<Notification> findAllByUserIdOrderByCreationTimestampDesc(String id);
 }

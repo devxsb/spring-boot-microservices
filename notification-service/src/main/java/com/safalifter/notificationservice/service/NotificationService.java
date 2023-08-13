@@ -6,7 +6,6 @@ import com.safalifter.notificationservice.request.SendNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,12 +20,11 @@ public class NotificationService {
                 .userId(request.getUserId())
                 .offerId(request.getOfferId())
                 .message(request.getMessage())
-                .createdDate(new Date())
                 .build();
         notificationRepository.save(notification);
     }
 
-    public List<Notification> getAllNotificationByUserId(String id) {
-        return notificationRepository.findAllByUserIdOrderByCreatedDateDesc(id);
+    public List<Notification> getAllByUserId(String id) {
+        return notificationRepository.findAllByUserIdOrderByCreationTimestampDesc(id);
     }
 }

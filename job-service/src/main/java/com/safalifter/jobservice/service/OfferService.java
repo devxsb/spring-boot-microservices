@@ -1,6 +1,5 @@
 package com.safalifter.jobservice.service;
 
-import com.safalifter.jobservice.client.NotificationServiceClient;
 import com.safalifter.jobservice.client.UserServiceClient;
 import com.safalifter.jobservice.enums.OfferStatus;
 import com.safalifter.jobservice.exc.NotFoundException;
@@ -11,6 +10,8 @@ import com.safalifter.jobservice.request.notification.SendNotificationRequest;
 import com.safalifter.jobservice.request.offer.MakeAnOfferRequest;
 import com.safalifter.jobservice.request.offer.OfferUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,9 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final AdvertService advertService;
     private final UserServiceClient userServiceclient;
-    private final NotificationServiceClient notificationServiceClient;
+
+    private final KafkaTemplate<String, SendNotificationRequest> kafkaTemplate;
+    private final NewTopic topic;
 
     public Offer makeAnOffer(MakeAnOfferRequest request) {
         String userId = isTheUserRegistered(request.getUserId());
@@ -34,10 +37,13 @@ public class OfferService {
                 .offeredPrice(request.getOfferedPrice())
                 .status(OfferStatus.OPEN).build();
         offerRepository.save(toSave);
-        notificationServiceClient.sendNotification(SendNotificationRequest.builder()
+
+        SendNotificationRequest notification = SendNotificationRequest.builder()
                 .message("You have received an offer for your advertising.")
                 .userId(advert.getUserId())
-                .offerId(toSave.getId()).build());
+                .offerId(toSave.getId()).build();
+
+        kafkaTemplate.send(topic.name(), notification);
         return toSave;
     }
 
