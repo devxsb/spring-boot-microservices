@@ -70,6 +70,20 @@ public class StorageService {
         }
     }
 
+    public void deleteImageFromFileSystem(String id) {
+        java.io.File file = new java.io.File(findFileById(id).getFilePath());
+
+        boolean deletionResult = file.delete();
+
+        if (deletionResult) fileRepository.deleteById(id);
+
+        else throw GenericErrorResponse.builder()
+                .message("Unable to delete file from storage")
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+    }
+
+
     protected File findFileById(String id) {
         return fileRepository.findById(id)
                 .orElseThrow(() -> GenericErrorResponse.builder()

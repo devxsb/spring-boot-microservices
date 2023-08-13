@@ -24,4 +24,10 @@ public class StorageController {
                 .contentType(MediaType.valueOf("image/png"))
                 .body(storageService.downloadImageFromFileSystem(id));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteImageFromFileSystem(@PathVariable String id) {
+        storageService.deleteImageFromFileSystem(id);
+        return ResponseEntity.ok().build();
+    }
 }
