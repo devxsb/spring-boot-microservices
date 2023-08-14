@@ -11,12 +11,12 @@ import com.safalifter.jobservice.request.offer.MakeAnOfferRequest;
 import com.safalifter.jobservice.request.offer.OfferUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +24,9 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final AdvertService advertService;
     private final UserServiceClient userServiceclient;
-
     private final KafkaTemplate<String, SendNotificationRequest> kafkaTemplate;
     private final NewTopic topic;
+    private final ModelMapper modelMapper;
 
     public Offer makeAnOffer(MakeAnOfferRequest request) {
         String userId = isTheUserRegistered(request.getUserId());
@@ -63,8 +63,7 @@ public class OfferService {
 
     public Offer updateOfferById(OfferUpdateRequest request) {
         Offer toUpdate = findOfferById(request.getId());
-        toUpdate.setOfferedPrice(Optional.of(request.getOfferedPrice()).orElse(toUpdate.getOfferedPrice()));
-        toUpdate.setStatus(Optional.ofNullable(request.getStatus()).orElse(toUpdate.getStatus()));
+        modelMapper.map(request, toUpdate);
         return offerRepository.save(toUpdate);
     }
 
