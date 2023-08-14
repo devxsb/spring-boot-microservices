@@ -11,12 +11,12 @@ import com.safalifter.userservice.repository.UserRepository;
 import com.safalifter.userservice.request.RegisterRequest;
 import com.safalifter.userservice.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileStorageClient fileStorageClient;
+    private final ModelMapper modelMapper;
 
     public User saveUser(RegisterRequest request) {
         User toSave = User.builder()
@@ -55,9 +56,10 @@ public class UserService {
         User toUpdate = findUserById(request.getId());
         if (!toUpdate.getUsername().equals(username))
             throw new UnauthorizedException("You are not authorized to update this user");
-        toUpdate.setUsername(Optional.ofNullable(request.getUsername()).orElse(toUpdate.getUsername()));
-        toUpdate.setPassword(Optional.ofNullable(request.getPassword()).orElse(toUpdate.getPassword()));
-        toUpdate.setUserDetails(updateUserDetails(toUpdate.getUserDetails(), request.getUserDetails(), file));
+
+        request.setUserDetails(updateUserDetails(toUpdate.getUserDetails(), request.getUserDetails(), file));
+        modelMapper.map(request, toUpdate);
+
         return userRepository.save(toUpdate);
     }
 
@@ -95,16 +97,7 @@ public class UserService {
             }
         }
 
-        if (request == null) return toUpdate;
-
-        toUpdate.setFirstName(Optional.ofNullable(request.getFirstName()).orElse(toUpdate.getFirstName()));
-        toUpdate.setLastName(Optional.ofNullable(request.getLastName()).orElse(toUpdate.getLastName()));
-        toUpdate.setPhoneNumber(Optional.ofNullable(request.getPhoneNumber()).orElse(toUpdate.getPhoneNumber()));
-        toUpdate.setCountry(Optional.ofNullable(request.getCountry()).orElse(toUpdate.getCountry()));
-        toUpdate.setCity(Optional.ofNullable(request.getCity()).orElse(toUpdate.getCity()));
-        toUpdate.setAddress(Optional.ofNullable(request.getAddress()).orElse(toUpdate.getAddress()));
-        toUpdate.setPostalCode(Optional.ofNullable(request.getPostalCode()).orElse(toUpdate.getPostalCode()));
-        toUpdate.setAboutMe(Optional.ofNullable(request.getAboutMe()).orElse(toUpdate.getAboutMe()));
+        modelMapper.map(request, toUpdate);
 
         return toUpdate;
     }

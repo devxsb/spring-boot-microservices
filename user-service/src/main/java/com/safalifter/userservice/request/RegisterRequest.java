@@ -1,8 +1,8 @@
 package com.safalifter.userservice.request;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class RegisterRequest {
     private String username;
     private String password;
