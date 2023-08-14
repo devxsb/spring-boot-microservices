@@ -55,7 +55,7 @@ public class StorageService {
                 .id(uuid)
                 .type(file.getContentType())
                 .filePath(filePath).build());
-        return "file uploaded successfully : " + uuid;
+        return uuid;
     }
 
     public byte[] downloadImageFromFileSystem(String id) {

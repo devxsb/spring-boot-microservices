@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -48,9 +49,10 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUserById(@RequestBody UserUpdateRequest request,
+    public ResponseEntity<UserDto> updateUserById(@RequestPart UserUpdateRequest request,
+                                                  @RequestPart(required = false) MultipartFile file,
                                                   @RequestHeader(value = "loggedInUser") String username) {
-        return ResponseEntity.ok(modelMapper.map(userService.updateUserById(request, username), UserDto.class));
+        return ResponseEntity.ok(modelMapper.map(userService.updateUserById(request, username, file), UserDto.class));
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.safalifter.userservice.service;
 
+import com.safalifter.userservice.client.FileStorageClient;
 import com.safalifter.userservice.enums.Active;
 import com.safalifter.userservice.enums.Role;
 import com.safalifter.userservice.exc.NotFoundException;
@@ -12,6 +13,7 @@ import com.safalifter.userservice.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileStorageClient fileStorageClient;
 
     public User saveUser(RegisterRequest request) {
         User toSave = User.builder()
@@ -48,13 +51,13 @@ public class UserService {
         return findUserByUsername(username);
     }
 
-    public User updateUserById(UserUpdateRequest request, String username) {
+    public User updateUserById(UserUpdateRequest request, String username, MultipartFile file) {
         User toUpdate = findUserById(request.getId());
         if (!toUpdate.getUsername().equals(username))
             throw new UnauthorizedException("You are not authorized to update this user");
         toUpdate.setUsername(Optional.ofNullable(request.getUsername()).orElse(toUpdate.getUsername()));
         toUpdate.setPassword(Optional.ofNullable(request.getPassword()).orElse(toUpdate.getPassword()));
-        toUpdate.setUserDetails(updateUserDetails(toUpdate.getUserDetails(), request.getUserDetails()));
+        toUpdate.setUserDetails(updateUserDetails(toUpdate.getUserDetails(), request.getUserDetails(), file));
         return userRepository.save(toUpdate);
     }
 
@@ -81,9 +84,19 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
-    private UserDetails updateUserDetails(UserDetails toUpdate, UserDetails request) {
-        if (request == null) return toUpdate;
+    private UserDetails updateUserDetails(UserDetails toUpdate, UserDetails request, MultipartFile file) {
         toUpdate = toUpdate == null ? new UserDetails() : toUpdate;
+
+        if (file != null) {
+            String profilePicture = fileStorageClient.uploadImageToFIleSystem(file).getBody();
+            if (profilePicture != null) {
+                fileStorageClient.deleteImageFromFileSystem(toUpdate.getProfilePicture());
+                toUpdate.setProfilePicture(profilePicture);
+            }
+        }
+
+        if (request == null) return toUpdate;
+
         toUpdate.setFirstName(Optional.ofNullable(request.getFirstName()).orElse(toUpdate.getFirstName()));
         toUpdate.setLastName(Optional.ofNullable(request.getLastName()).orElse(toUpdate.getLastName()));
         toUpdate.setPhoneNumber(Optional.ofNullable(request.getPhoneNumber()).orElse(toUpdate.getPhoneNumber()));
@@ -92,7 +105,7 @@ public class UserService {
         toUpdate.setAddress(Optional.ofNullable(request.getAddress()).orElse(toUpdate.getAddress()));
         toUpdate.setPostalCode(Optional.ofNullable(request.getPostalCode()).orElse(toUpdate.getPostalCode()));
         toUpdate.setAboutMe(Optional.ofNullable(request.getAboutMe()).orElse(toUpdate.getAboutMe()));
-        toUpdate.setProfilePicture(Optional.ofNullable(request.getProfilePicture()).orElse(toUpdate.getProfilePicture()));
+
         return toUpdate;
     }
 }
