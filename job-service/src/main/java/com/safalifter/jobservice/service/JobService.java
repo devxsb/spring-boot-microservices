@@ -8,6 +8,7 @@ import com.safalifter.jobservice.repository.JobRepository;
 import com.safalifter.jobservice.request.job.JobCreateRequest;
 import com.safalifter.jobservice.request.job.JobUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ public class JobService {
     private final JobRepository jobRepository;
     private final CategoryService categoryService;
     private final FileStorageClient fileStorageClient;
+    private final ModelMapper modelMapper;
 
     public Job createJob(JobCreateRequest request, MultipartFile file) {
         Category category = categoryService.getCategoryById(request.getCategoryId());
@@ -48,11 +50,7 @@ public class JobService {
 
     public Job updateJob(JobUpdateRequest request, MultipartFile file) {
         Job toUpdate = findJobById(request.getCategoryId());
-        toUpdate.setName(Optional.ofNullable(request.getName()).orElse(request.getName()));
-        toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(request.getDescription()));
-        toUpdate.setCategory(Optional.of(request.getCategoryId())
-                .map(categoryService::getCategoryById).orElse(toUpdate.getCategory()));
-        toUpdate.setKeys(Optional.of(List.of(request.getKeys())).orElse(toUpdate.getKeys()));
+        modelMapper.map(request, toUpdate);
 
         if (file != null) {
             String imageId = fileStorageClient.uploadImageToFIleSystem(file).getBody();

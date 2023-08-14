@@ -1,9 +1,9 @@
 package com.safalifter.jobservice.request.notification;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 @Builder
 public class SendNotificationRequest {
     private String userId;

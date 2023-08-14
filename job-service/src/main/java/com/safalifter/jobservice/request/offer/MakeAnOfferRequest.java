@@ -1,8 +1,8 @@
 package com.safalifter.jobservice.request.offer;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class MakeAnOfferRequest {
     private String userId;
     private String advertId;

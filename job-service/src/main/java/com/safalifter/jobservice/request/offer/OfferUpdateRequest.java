@@ -1,9 +1,9 @@
 package com.safalifter.jobservice.request.offer;
 
 import com.safalifter.jobservice.enums.OfferStatus;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class OfferUpdateRequest {
     private String id;
     private int offeredPrice;

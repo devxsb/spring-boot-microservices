@@ -11,12 +11,12 @@ import com.safalifter.jobservice.repository.AdvertRepository;
 import com.safalifter.jobservice.request.advert.AdvertCreateRequest;
 import com.safalifter.jobservice.request.advert.AdvertUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +25,7 @@ public class AdvertService {
     private final JobService jobService;
     private final UserServiceClient userServiceclient;
     private final FileStorageClient fileStorageClient;
+    private final ModelMapper modelMapper;
 
     public Advert createAdvert(AdvertCreateRequest request, MultipartFile file) {
         String userId = isTheUserRegistered(request.getUserId());
@@ -64,11 +65,7 @@ public class AdvertService {
 
     public Advert updateAdvertById(AdvertUpdateRequest request, MultipartFile file) {
         Advert toUpdate = findAdvertById(request.getId());
-        toUpdate.setName(Optional.ofNullable(request.getName()).orElse(toUpdate.getName()));
-        toUpdate.setDeliveryTime(Optional.of(request.getDeliveryTime()).orElse(toUpdate.getDeliveryTime()));
-        toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(toUpdate.getDescription()));
-        toUpdate.setPrice(Optional.of(request.getPrice()).orElse(toUpdate.getPrice()));
-        toUpdate.setStatus(Optional.ofNullable(request.getStatus()).orElse(toUpdate.getStatus()));
+        modelMapper.map(request, toUpdate);
 
         if (file != null) {
             String imageId = fileStorageClient.uploadImageToFIleSystem(file).getBody();
