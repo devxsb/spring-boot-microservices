@@ -1,5 +1,6 @@
 package com.safalifter.jobservice.service;
 
+import com.safalifter.jobservice.client.FileStorageClient;
 import com.safalifter.jobservice.exc.NotFoundException;
 import com.safalifter.jobservice.model.Category;
 import com.safalifter.jobservice.model.Job;
@@ -8,6 +9,7 @@ import com.safalifter.jobservice.request.job.JobCreateRequest;
 import com.safalifter.jobservice.request.job.JobUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,15 +19,22 @@ import java.util.stream.Collectors;
 public class JobService {
     private final JobRepository jobRepository;
     private final CategoryService categoryService;
+    private final FileStorageClient fileStorageClient;
 
-    public Job createJob(JobCreateRequest request) {
+    public Job createJob(JobCreateRequest request, MultipartFile file) {
         Category category = categoryService.getCategoryById(request.getCategoryId());
+
+        String imageId = null;
+
+        if (file != null)
+            imageId = fileStorageClient.uploadImageToFIleSystem(file).getBody();
+
         return jobRepository.save(Job.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .category(category)
                 .keys(List.of(request.getKeys()))
-                .imagesId(List.of(request.getImagesId()))
+                .imageId(imageId)
                 .build());
     }
 
@@ -37,14 +46,22 @@ public class JobService {
         return findJobById(id);
     }
 
-    public Job updateJob(JobUpdateRequest request) {
+    public Job updateJob(JobUpdateRequest request, MultipartFile file) {
         Job toUpdate = findJobById(request.getCategoryId());
         toUpdate.setName(Optional.ofNullable(request.getName()).orElse(request.getName()));
         toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(request.getDescription()));
         toUpdate.setCategory(Optional.of(request.getCategoryId())
                 .map(categoryService::getCategoryById).orElse(toUpdate.getCategory()));
         toUpdate.setKeys(Optional.of(List.of(request.getKeys())).orElse(toUpdate.getKeys()));
-        toUpdate.setImagesId(Optional.of(List.of(request.getImagesId())).orElse(toUpdate.getImagesId()));
+
+        if (file != null) {
+            String imageId = fileStorageClient.uploadImageToFIleSystem(file).getBody();
+            if (imageId != null) {
+                fileStorageClient.deleteImageFromFileSystem(toUpdate.getImageId());
+                toUpdate.setImageId(imageId);
+            }
+        }
+
         return jobRepository.save(toUpdate);
     }
 
@@ -59,14 +76,12 @@ public class JobService {
     public List<Job> getJobsThatFitYourNeeds(String needs) {
         String[] keys = needs.replaceAll("\"", "").split(" ");
         HashMap<String, Integer> map = new HashMap<>();
-        Arrays.stream(keys).forEach(key -> {
-            jobRepository.getJobsByKeysContainsIgnoreCase(key).forEach(job -> {
-                if (map.containsKey(job.getId())) {
-                    int count = map.get(job.getId());
-                    map.put(job.getId(), count + 1);
-                } else map.put(job.getId(), 1);
-            });
-        });
+        Arrays.stream(keys).forEach(key -> jobRepository.getJobsByKeysContainsIgnoreCase(key).forEach(job -> {
+            if (map.containsKey(job.getId())) {
+                int count = map.get(job.getId());
+                map.put(job.getId(), count + 1);
+            } else map.put(job.getId(), 1);
+        }));
         return map.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .map(entry -> findJobById(entry.getKey()))

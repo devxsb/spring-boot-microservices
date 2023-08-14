@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,9 +23,10 @@ public class JobController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<JobDto> createJob(@RequestBody JobCreateRequest request) {
+    ResponseEntity<JobDto> createJob(@RequestPart JobCreateRequest request,
+                                     @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(modelMapper.map(jobService.createJob(request), JobDto.class));
+                .body(modelMapper.map(jobService.createJob(request, file), JobDto.class));
     }
 
     @PostMapping("/getJobsThatFitYourNeeds")
@@ -52,8 +54,9 @@ public class JobController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<JobDto> updateJob(@RequestBody JobUpdateRequest request) {
-        return ResponseEntity.ok(modelMapper.map(jobService.updateJob(request), JobDto.class));
+    ResponseEntity<JobDto> updateJob(@RequestPart JobUpdateRequest request,
+                                     @RequestPart(required = false) MultipartFile file) {
+        return ResponseEntity.ok(modelMapper.map(jobService.updateJob(request, file), JobDto.class));
     }
 
     @DeleteMapping("/deleteJobById/{id}")

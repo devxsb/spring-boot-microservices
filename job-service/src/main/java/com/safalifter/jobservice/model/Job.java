@@ -15,6 +15,7 @@ import java.util.List;
 public class Job extends BaseEntity {
     private String name;
     private String description;
+    private String imageId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id")
@@ -25,7 +26,4 @@ public class Job extends BaseEntity {
 
     @ElementCollection
     private List<String> keys = Collections.emptyList();
-
-    @ElementCollection
-    private List<String> imagesId = Collections.emptyList();
 }

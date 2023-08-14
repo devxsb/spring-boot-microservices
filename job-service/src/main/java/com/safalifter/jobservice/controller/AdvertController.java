@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,9 +22,10 @@ public class AdvertController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/create")
-    public ResponseEntity<AdvertDto> createAdvert(@RequestBody AdvertCreateRequest request) {
+    public ResponseEntity<AdvertDto> createAdvert(@RequestPart AdvertCreateRequest request,
+                                                  @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(modelMapper.map(advertService.createAdvert(request), AdvertDto.class));
+                .body(modelMapper.map(advertService.createAdvert(request, file), AdvertDto.class));
     }
 
     @GetMapping("/getAll")
@@ -45,8 +47,9 @@ public class AdvertController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AdvertDto> updateAdvertById(@RequestBody AdvertUpdateRequest request) {
-        return ResponseEntity.ok(modelMapper.map(advertService.updateAdvertById(request), AdvertDto.class));
+    public ResponseEntity<AdvertDto> updateAdvertById(@RequestPart AdvertUpdateRequest request,
+                                                      @RequestPart(required = false) MultipartFile file) {
+        return ResponseEntity.ok(modelMapper.map(advertService.updateAdvertById(request, file), AdvertDto.class));
     }
 
     @DeleteMapping("/deleteAdvertById/{id}")

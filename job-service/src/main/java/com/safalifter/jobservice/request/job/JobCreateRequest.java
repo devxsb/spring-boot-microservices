@@ -1,12 +1,11 @@
 package com.safalifter.jobservice.request.job;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class JobCreateRequest {
     private String name;
     private String description;
     private String categoryId;
     private String[] keys;
-    private String[] imagesId;
 }

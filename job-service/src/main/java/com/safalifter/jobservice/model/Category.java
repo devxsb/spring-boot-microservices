@@ -3,10 +3,8 @@ package com.safalifter.jobservice.model;
 import lombok.*;
 
 import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.Collections;
 import java.util.List;
 
 @Entity(name = "categories")
@@ -18,10 +16,8 @@ import java.util.List;
 public class Category extends BaseEntity {
     private String name;
     private String description;
+    private String imageId;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Job> jobs;
-
-    @ElementCollection
-    private List<String> imagesId = Collections.emptyList();
 }

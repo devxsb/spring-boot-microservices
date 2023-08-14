@@ -1,9 +1,9 @@
 package com.safalifter.jobservice.request.advert;
 
 import com.safalifter.jobservice.enums.AdvertStatus;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class AdvertUpdateRequest {
     private String id;
     private String name;
@@ -11,5 +11,4 @@ public class AdvertUpdateRequest {
     private int deliveryTime;
     private int price;
     private AdvertStatus status;
-    private String[] imagesId;
 }

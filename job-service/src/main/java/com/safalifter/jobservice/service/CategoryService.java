@@ -1,5 +1,6 @@
 package com.safalifter.jobservice.service;
 
+import com.safalifter.jobservice.client.FileStorageClient;
 import com.safalifter.jobservice.exc.NotFoundException;
 import com.safalifter.jobservice.model.Category;
 import com.safalifter.jobservice.repository.CategoryRepository;
@@ -7,6 +8,7 @@ import com.safalifter.jobservice.request.category.CategoryCreateRequest;
 import com.safalifter.jobservice.request.category.CategoryUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +17,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final FileStorageClient fileStorageClient;
 
-    public Category createCategory(CategoryCreateRequest request) {
+    public Category createCategory(CategoryCreateRequest request, MultipartFile file) {
+        String imageId = null;
+
+        if (file != null)
+            imageId = fileStorageClient.uploadImageToFIleSystem(file).getBody();
+
         return categoryRepository.save(
                 Category.builder()
                         .name(request.getName())
                         .description(request.getDescription())
-                        .imagesId(List.of(request.getImagesId()))
+                        .imageId(imageId)
                         .build());
     }
 
@@ -33,11 +41,19 @@ public class CategoryService {
         return findCategoryById(id);
     }
 
-    public Category updateCategoryById(CategoryUpdateRequest request) {
+    public Category updateCategoryById(CategoryUpdateRequest request, MultipartFile file) {
         Category toUpdate = findCategoryById(request.getId());
         toUpdate.setName(Optional.ofNullable(request.getName()).orElse(request.getName()));
         toUpdate.setDescription(Optional.ofNullable(request.getDescription()).orElse(request.getDescription()));
-        toUpdate.setImagesId(Optional.of(List.of(request.getImagesId())).orElse(toUpdate.getImagesId()));
+
+        if (file != null) {
+            String imageId = fileStorageClient.uploadImageToFIleSystem(file).getBody();
+            if (imageId != null) {
+                fileStorageClient.deleteImageFromFileSystem(toUpdate.getImageId());
+                toUpdate.setImageId(imageId);
+            }
+        }
+
         return categoryRepository.save(toUpdate);
     }
 
