@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="job-service" />
+        <module name="config-server" />
         <module name="auth-service" />
         <module name="user-service" />
         <module name="eureka-server" />
@@ -27,6 +28,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="auth-service" options="-parameters" />
       <module name="chat-service" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="contact-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="file-service" options="-parameters" />

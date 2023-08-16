@@ -53,6 +53,7 @@
 * Lombok
 * Log4j2
 
+
 ### Explore Rest APIs
 
 <table style="width:100%">
@@ -340,7 +341,7 @@
          "file": "string"
         }
     
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="categoryCreate"> Create Category
@@ -461,7 +462,7 @@
       "file": "string"
     }
         
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="makeAnOffer"> Make An Offer
@@ -489,7 +490,7 @@
       "status": "OPEN"
     }
         
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 
@@ -516,7 +517,7 @@
 ``` 
     http://localhost:8080/v1/user/deleteUserById/{id}
     
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="getCategoryById"> Get Category By Id
@@ -564,7 +565,7 @@
 ``` 
     http://localhost:8080/v1/job-service/advert/getAdvertById/{id}
     
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="getAdvertsByUserId"> Get Advert By User Id
@@ -580,7 +581,7 @@
 ``` 
     http://localhost:8080/v1/job-service/job/deleteAdvertById/{id}
     
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="getOfferById"> Get Offer By Id
@@ -612,7 +613,7 @@
 ``` 
     http://localhost:8080/v1/job-service/offer/deleteOfferById/{id}
     
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="getAllNotificationByUserId">Get All Notification By User Id
@@ -620,7 +621,7 @@
 ``` 
     http://localhost:8080/v1/notification/getAllByUserId/{id}
     
-    Bearer Token : Authorize User Token
+    Bearer Token : Authorized User Token
 ```
 
 ##### <a id="downloadImage">Download Image to File Storage
