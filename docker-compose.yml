@@ -1,7 +1,20 @@
 version: "3.5"
 
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 55
+      POSTGRES_DB: microservice
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   zookeeper:
+    container_name: zookeeper
     image: "docker.io/bitnami/zookeeper:3"
     ports:
       - "2181:2181"
@@ -9,7 +22,9 @@ services:
       - "zookeeper_data:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+
   kafka:
+    container_name: kafka
     image: "docker.io/bitnami/kafka:2-debian-10"
     ports:
       - "9092:9092"
@@ -27,9 +42,10 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
     depends_on:
       - zookeeper
+
   kafka-ui:
-    image: provectuslabs/kafka-ui
     container_name: kafka-ui
+    image: provectuslabs/kafka-ui
     ports:
       - "9090:8080"
     restart: always
@@ -42,4 +58,6 @@ volumes:
   zookeeper_data:
     driver: local
   kafka_data:
+    driver: local
+  postgres_data:
     driver: local
