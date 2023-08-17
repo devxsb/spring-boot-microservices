@@ -341,7 +341,7 @@
          "file": "string"
         }
     
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="categoryCreate"> Create Category
@@ -462,7 +462,7 @@
       "file": "string"
     }
         
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="makeAnOffer"> Make An Offer
@@ -490,7 +490,7 @@
       "status": "OPEN"
     }
         
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 
@@ -517,7 +517,7 @@
 ``` 
     http://localhost:8080/v1/user/deleteUserById/{id}
     
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="getCategoryById"> Get Category By Id
@@ -565,7 +565,7 @@
 ``` 
     http://localhost:8080/v1/job-service/advert/getAdvertById/{id}
     
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="getAdvertsByUserId"> Get Advert By User Id
@@ -581,7 +581,7 @@
 ``` 
     http://localhost:8080/v1/job-service/job/deleteAdvertById/{id}
     
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="getOfferById"> Get Offer By Id
@@ -613,7 +613,7 @@
 ``` 
     http://localhost:8080/v1/job-service/offer/deleteOfferById/{id}
     
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="getAllNotificationByUserId">Get All Notification By User Id
@@ -621,7 +621,7 @@
 ``` 
     http://localhost:8080/v1/notification/getAllByUserId/{id}
     
-    Bearer Token : Authorized User Token
+    Bearer Token : Authorized User or Admin
 ```
 
 ##### <a id="downloadImage">Download Image to File Storage
@@ -647,10 +647,12 @@
 
 <b>5 )</b> Run <b>Gateway</b>
 
-<b>6 )</b> Run other services (<b>auth-service</b>, <b>user-service</b>, <b>job-service</b>, <b>notification-service</b>  and lastly <b>
+<b>6 )</b> Run <b>Config Server</b>
+
+<b>7 )</b> Run other services (<b>auth-service</b>, <b>user-service</b>, <b>job-service</b>, <b>notification-service</b>  and lastly <b>
 file-storage</b>)
 
-<b>7 )</b> For swagger ui localhost:8080/v1/{service-name}/swagger-ui/index.html</b>
+<b>8 )</b> For swagger ui localhost:8080/v1/{service-name}/swagger-ui/index.html</b>
 
 
 ### Screenshots
