@@ -49,16 +49,16 @@ public class UserController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN') or @userService.getUserById(#request.id).username == principal")
     public ResponseEntity<UserDto> updateUserById(@RequestPart UserUpdateRequest request,
-                                                  @RequestPart(required = false) MultipartFile file,
-                                                  @RequestHeader(value = "loggedInUser") String username) {
-        return ResponseEntity.ok(modelMapper.map(userService.updateUserById(request, username, file), UserDto.class));
+                                                  @RequestPart(required = false) MultipartFile file) {
+        return ResponseEntity.ok(modelMapper.map(userService.updateUserById(request, file), UserDto.class));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable String id,
-                                               @RequestHeader(value = "loggedInUser") String username) {
-        userService.deleteUserById(id, username);
+    @DeleteMapping("/deleteUserById/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @userService.getUserById(#id).username == principal")
+    public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
+        userService.deleteUserById(id);
         return ResponseEntity.ok().build();
     }
 }

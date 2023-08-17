@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,11 +44,15 @@ public class OfferController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@offerService.getUserById(@offerService.getOfferById(#request.id).userId).username == principal")
     public ResponseEntity<OfferDto> updateOfferById(@RequestBody OfferUpdateRequest request) {
         return ResponseEntity.ok(modelMapper.map(offerService.updateOfferById(request), OfferDto.class));
     }
 
     @DeleteMapping("/deleteOfferById/{id}")
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@offerService.getUserById(@offerService.getOfferById(#id).userId).username == principal")
     public ResponseEntity<Void> deleteOfferById(@PathVariable String id) {
         offerService.deleteOfferById(id);
         return ResponseEntity.ok().build();

@@ -74,12 +74,13 @@ public class JobService {
     public List<Job> getJobsThatFitYourNeeds(String needs) {
         String[] keys = needs.replaceAll("\"", "").split(" ");
         HashMap<String, Integer> map = new HashMap<>();
-        Arrays.stream(keys).forEach(key -> jobRepository.getJobsByKeysContainsIgnoreCase(key).forEach(job -> {
-            if (map.containsKey(job.getId())) {
-                int count = map.get(job.getId());
-                map.put(job.getId(), count + 1);
-            } else map.put(job.getId(), 1);
-        }));
+        Arrays.stream(keys).forEach(key -> jobRepository.getJobsByKeysContainsIgnoreCase(key)
+                .forEach(job -> {
+                    if (map.containsKey(job.getId())) {
+                        int count = map.get(job.getId());
+                        map.put(job.getId(), count + 1);
+                    } else map.put(job.getId(), 1);
+                }));
         return map.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .map(entry -> findJobById(entry.getKey()))

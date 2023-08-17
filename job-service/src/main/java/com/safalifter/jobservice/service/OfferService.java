@@ -1,6 +1,7 @@
 package com.safalifter.jobservice.service;
 
 import com.safalifter.jobservice.client.UserServiceClient;
+import com.safalifter.jobservice.dto.UserDto;
 import com.safalifter.jobservice.enums.OfferStatus;
 import com.safalifter.jobservice.exc.NotFoundException;
 import com.safalifter.jobservice.model.Advert;
@@ -16,7 +17,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class OfferService {
     private final ModelMapper modelMapper;
 
     public Offer makeAnOffer(MakeAnOfferRequest request) {
-        String userId = isTheUserRegistered(request.getUserId());
+        String userId = getUserById(request.getUserId()).getId();
         Advert advert = advertService.getAdvertById(request.getAdvertId());
         Offer toSave = Offer.builder()
                 .userId(userId)
@@ -57,8 +58,13 @@ public class OfferService {
     }
 
     public List<Offer> getOffersByUserId(String id) {
-        String userId = isTheUserRegistered(id);
+        String userId = getUserById(id).getId();
         return offerRepository.getOffersByUserId(userId);
+    }
+
+    public UserDto getUserById(String id) {
+        return Optional.ofNullable(userServiceclient.getUserById(id).getBody())
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public Offer updateOfferById(OfferUpdateRequest request) {
@@ -74,9 +80,5 @@ public class OfferService {
     protected Offer findOfferById(String id) {
         return offerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
-    }
-
-    protected String isTheUserRegistered(String id) {
-        return Objects.requireNonNull(userServiceclient.getUserById(id).getBody()).getId();
     }
 }

@@ -4,7 +4,6 @@ import com.safalifter.userservice.client.FileStorageClient;
 import com.safalifter.userservice.enums.Active;
 import com.safalifter.userservice.enums.Role;
 import com.safalifter.userservice.exc.NotFoundException;
-import com.safalifter.userservice.exc.UnauthorizedException;
 import com.safalifter.userservice.model.User;
 import com.safalifter.userservice.model.UserDetails;
 import com.safalifter.userservice.repository.UserRepository;
@@ -52,10 +51,8 @@ public class UserService {
         return findUserByUsername(username);
     }
 
-    public User updateUserById(UserUpdateRequest request, String username, MultipartFile file) {
+    public User updateUserById(UserUpdateRequest request, MultipartFile file) {
         User toUpdate = findUserById(request.getId());
-        if (!toUpdate.getUsername().equals(username))
-            throw new UnauthorizedException("You are not authorized to update this user");
 
         request.setUserDetails(updateUserDetails(toUpdate.getUserDetails(), request.getUserDetails(), file));
         modelMapper.map(request, toUpdate);
@@ -63,10 +60,8 @@ public class UserService {
         return userRepository.save(toUpdate);
     }
 
-    public void deleteUserById(String id, String username) {
+    public void deleteUserById(String id) {
         User toDelete = findUserById(id);
-        if (!toDelete.getUsername().equals(username))
-            throw new UnauthorizedException("You are not authorized to delete this user");
         toDelete.setActive(Active.INACTIVE);
         userRepository.save(toDelete);
     }

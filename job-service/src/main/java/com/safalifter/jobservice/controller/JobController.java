@@ -29,8 +29,8 @@ public class JobController {
                 .body(modelMapper.map(jobService.createJob(request, file), JobDto.class));
     }
 
-    @PostMapping("/getJobsThatFitYourNeeds")
-    ResponseEntity<List<JobDto>> getJobsThatFitYourNeeds(@RequestBody String needs) {
+    @PostMapping("/getJobsThatFitYourNeeds/{needs}")
+    ResponseEntity<List<JobDto>> getJobsThatFitYourNeeds(@PathVariable String needs) {
         return ResponseEntity.ok(jobService.getJobsThatFitYourNeeds(needs).stream()
                 .map(job -> modelMapper.map(job, JobDto.class)).toList());
     }
