@@ -46,7 +46,8 @@
     * PostgreSQL
 * Kafka
 * Redis
-* Docker
+* Docker 
+* Validation
 * File storage
 * Modelmapper
 * Openapi UI
