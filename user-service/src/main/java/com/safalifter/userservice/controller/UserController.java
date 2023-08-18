@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/save")
-    public ResponseEntity<UserDto> save(@RequestBody RegisterRequest request) {
+    public ResponseEntity<UserDto> save(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(modelMapper.map(userService.saveUser(request), UserDto.class));
     }
 
@@ -50,7 +51,7 @@ public class UserController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN') or @userService.getUserById(#request.id).username == principal")
-    public ResponseEntity<UserDto> updateUserById(@RequestPart UserUpdateRequest request,
+    public ResponseEntity<UserDto> updateUserById(@Valid @RequestPart UserUpdateRequest request,
                                                   @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.ok(modelMapper.map(userService.updateUserById(request, file), UserDto.class));
     }

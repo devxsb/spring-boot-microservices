@@ -35,7 +35,8 @@ public class JobService {
                 .name(request.getName())
                 .description(request.getDescription())
                 .category(category)
-                .keys(List.of(request.getKeys()))
+                .keys(Optional.of(List.of(request.getKeys()))
+                        .orElse(new ArrayList<>()))
                 .imageId(imageId)
                 .build());
     }

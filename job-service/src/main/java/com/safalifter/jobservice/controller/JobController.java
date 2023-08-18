@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class JobController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<JobDto> createJob(@RequestPart JobCreateRequest request,
+    ResponseEntity<JobDto> createJob(@Valid @RequestPart JobCreateRequest request,
                                      @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(jobService.createJob(request, file), JobDto.class));
@@ -54,7 +55,7 @@ public class JobController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<JobDto> updateJob(@RequestPart JobUpdateRequest request,
+    ResponseEntity<JobDto> updateJob(@Valid @RequestPart JobUpdateRequest request,
                                      @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.ok(modelMapper.map(jobService.updateJob(request, file), JobDto.class));
     }

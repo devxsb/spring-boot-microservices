@@ -77,6 +77,10 @@ public class OfferService {
         offerRepository.deleteById(id);
     }
 
+    public boolean authorizeCheck(String id, String principal) {
+        return getUserById(getOfferById(id).getUserId()).getUsername().equals(principal);
+    }
+
     protected Offer findOfferById(String id) {
         return offerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));

@@ -1,11 +1,12 @@
 package com.safalifter.jobservice.request.offer;
 
-import com.safalifter.jobservice.enums.OfferStatus;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class OfferUpdateRequest {
+    @NotBlank(message = "Offer id is required")
     private String id;
     private int offeredPrice;
-    private OfferStatus status;
 }

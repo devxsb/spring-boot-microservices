@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class AdvertController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/create")
-    public ResponseEntity<AdvertDto> createAdvert(@RequestPart AdvertCreateRequest request,
+    public ResponseEntity<AdvertDto> createAdvert(@Valid @RequestPart AdvertCreateRequest request,
                                                   @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(advertService.createAdvert(request, file), AdvertDto.class));
@@ -48,14 +49,14 @@ public class AdvertController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN') or @advertService.getUserById(#request.id).username == principal")
-    public ResponseEntity<AdvertDto> updateAdvertById(@RequestPart AdvertUpdateRequest request,
+    @PreAuthorize("hasRole('ADMIN') or @advertService.authorizeCheck(#request.id, principal)")
+    public ResponseEntity<AdvertDto> updateAdvertById(@Valid @RequestPart AdvertUpdateRequest request,
                                                       @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.ok(modelMapper.map(advertService.updateAdvertById(request, file), AdvertDto.class));
     }
 
     @DeleteMapping("/deleteAdvertById/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @advertService.getUserById(#id).username == principal")
+    @PreAuthorize("hasRole('ADMIN') or @advertService.authorizeCheck(#id, principal)")
     public ResponseEntity<Void> deleteAdvertById(@PathVariable String id) {
         advertService.deleteAdvertById(id);
         return ResponseEntity.ok().build();

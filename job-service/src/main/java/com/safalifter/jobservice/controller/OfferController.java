@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class OfferController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/makeAnOffer")
-    public ResponseEntity<OfferDto> makeAnOffer(@RequestBody MakeAnOfferRequest request) {
+    public ResponseEntity<OfferDto> makeAnOffer(@Valid @RequestBody MakeAnOfferRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(offerService.makeAnOffer(request), OfferDto.class));
     }
@@ -44,15 +45,13 @@ public class OfferController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN') or " +
-            "@offerService.getUserById(@offerService.getOfferById(#request.id).userId).username == principal")
-    public ResponseEntity<OfferDto> updateOfferById(@RequestBody OfferUpdateRequest request) {
+    @PreAuthorize("hasRole('ADMIN') or @offerService.authorizeCheck(#request.id, principal)")
+    public ResponseEntity<OfferDto> updateOfferById(@Valid @RequestBody OfferUpdateRequest request) {
         return ResponseEntity.ok(modelMapper.map(offerService.updateOfferById(request), OfferDto.class));
     }
 
     @DeleteMapping("/deleteOfferById/{id}")
-    @PreAuthorize("hasRole('ADMIN') or " +
-            "@offerService.getUserById(@offerService.getOfferById(#id).userId).username == principal")
+    @PreAuthorize("hasRole('ADMIN') or @offerService.authorizeCheck(#id, principal)")
     public ResponseEntity<Void> deleteOfferById(@PathVariable String id) {
         offerService.deleteOfferById(id);
         return ResponseEntity.ok().build();

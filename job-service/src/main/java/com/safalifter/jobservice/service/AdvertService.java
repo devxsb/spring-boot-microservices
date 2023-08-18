@@ -88,6 +88,10 @@ public class AdvertService {
         advertRepository.deleteById(id);
     }
 
+    public boolean authorizeCheck(String id, String principal) {
+        return getUserById(getAdvertById(id).getUserId()).getUsername().equals(principal);
+    }
+
     protected Advert findAdvertById(String id) {
         return advertRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Advert not found"));

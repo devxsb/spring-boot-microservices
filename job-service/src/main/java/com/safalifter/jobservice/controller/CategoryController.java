@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class CategoryController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<CategoryDto> createCategory(@RequestPart CategoryCreateRequest request,
+    ResponseEntity<CategoryDto> createCategory(@Valid @RequestPart CategoryCreateRequest request,
                                                @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(categoryService.createCategory(request,file), CategoryDto.class));
@@ -43,7 +44,7 @@ public class CategoryController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<JobDto> updateCategoryById(@RequestPart CategoryUpdateRequest request,
+    ResponseEntity<JobDto> updateCategoryById(@Valid @RequestPart CategoryUpdateRequest request,
                                               @RequestPart(required = false) MultipartFile file) {
         return ResponseEntity.ok(modelMapper.map(categoryService.updateCategoryById(request,file), JobDto.class));
     }
