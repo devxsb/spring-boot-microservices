@@ -1,5 +1,6 @@
 package com.safalifter.jobservice.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safalifter.jobservice.exc.GenericErrorResponse;
 import feign.Response;
 import feign.codec.ErrorDecoder;
@@ -9,22 +10,20 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class CustomErrorDecoder implements ErrorDecoder {
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Exception decode(String methodKey, Response response) {
-        if (response.body() == null) // 401-403
-            throw GenericErrorResponse.builder()
-                    .httpStatus(HttpStatus.valueOf(response.status()))
-                    .message("No response body")
-                    .build();
-
         try (InputStream body = response.body().asInputStream()) {
-            String message = IOUtils.toString(body, StandardCharsets.UTF_8);
+            Map<String, String> errors =
+                    mapper.readValue(IOUtils.toString(body, StandardCharsets.UTF_8), Map.class);
             return GenericErrorResponse
                     .builder()
                     .httpStatus(HttpStatus.valueOf(response.status()))
-                    .message(message.substring(10, message.length() - 2))
+                    .message(errors.get("error"))
                     .build();
 
         } catch (IOException exception) {
